@@ -1,23 +1,27 @@
 <?php
-// echo "class";s
-// include_once('../data/playerlist.json');
+
+
+
 class PlayerModel
 {
     private string $host = '';
     private string $user = '';
     private string $pass = '';
     private string $db = '';
+    private $condb;
+    // private string $condb = '';
     function __construct(object $conf)
     {
         $this->host = $conf->host;
         $this->user = $conf->user;
         $this->pass = $conf->pass;
         $this->db = $conf->db;
-        $this->checkAndInserter();
+        // $this->checkAndInserter();
+        // $this->getAllPlayer();
     }
-    private function checkAndInserter(): void
+    public function checkAndInserter(): void
     {
-        $this->onConNect();
+        $this->connect();
         $sql = "SELECT 1 FROM football_player LIMIT 1";
         try {
             $this->condb->exec($sql);
@@ -42,12 +46,12 @@ class PlayerModel
                 $_sql = "INSERT INTO `football_player` (`identifier`, `firstname`, `lastname`, `team`, `position`, `image_url`) VALUES( ?,?,?,?,?,? );";
                 $query = $this->condb->prepare($_sql);
                 $query->execute([$identifier, $first_name, $last_name, $team, $position, $image]);
-        
+
             }
 
         }
     }
-    public function onConNect(): void
+    public function connect(): void
     {
         try {
             $this->condb = new PDO("mysql:host=$this->host;dbname=$this->db;", $this->user, $this->pass);
@@ -62,31 +66,85 @@ class PlayerModel
     {
         $this->condb = null;
     }
-    public function inserPlayer($obj): bool
+    public function inserPlayer($dataArray): bool
     {
         try {
-            $this->onConNect();
-            $sql = "INSERT INTO MyGuests (firstname, lastname, email)
-            VALUES ('John', 'Doe', 'john@example.com')";
-            // use exec() because no results are returned
-            // $condb->exec($sql);
+            // INSERT INTO `football_player` (`identifier`, `firstname`, `lastname`, `team`, `position`, `image_url`) VALUES (1, 'ken', 'singhayoo', 'หนองตากใบ', 'เก็บบอล', 'none');
+            $this->connect();
+            $sql = " INSERT INTO `football_player` (`identifier`, `firstname`, `lastname`, `team`, `position`, `image_url`)";
+            $sql .= " VALUES (null, :firstname, :lastname, :team,:position , :image_url);";
+            $query = $this->condb->prepare($sql);
+            if ($query->execute($dataArray)) {
+
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception $e) {
             $this->close_db();
             throw $e;
         }
         // return true;
     }
-    public function updatePlayer($obj): bool
+    public function updatePlayer($dataArray)
     {
-        return true;
+        // UPDATE `football_player` SET `firstname` = 'Aleksandar update' WHERE `football_player`.`identifier` = 1008;
+        // UPDATE `football_player` SET `firstname` = 'Aleksandar .', `lastname` = 'Kolarov .', `team` = 'Manchester City .', `position` = 'Defender .', `image_url` = 'aleksandarkolarov.jpg ' WHERE `football_player`.`identifier` = 1008;
+        $this->connect();
+        $sql = "UPDATE `football_player` SET 
+        `firstname` = :firstname,
+        `lastname` = :lastname,
+        `team` = :team,
+        `position` = :position,
+        `image_url` = :image_url";
+        $sql .=" WHERE `football_player`.`identifier` = :identifier";
+
+        $query = $this->condb->prepare($sql);
+        if ($query->execute($dataArray)) {
+            return true;
+        } else {
+            $this->close_db();
+            return false;
+        }
     }
-    public function deletePlayer($id): bool
+    public function deletePlayer($identifier): bool
     {
-        return true;
+        // DELETE FROM football_player WHERE `football_player`.`identifier` = 2312
+        $this->connect();
+        $sql = "DELETE FROM football_player WHERE `football_player`.`identifier` = " . $identifier . " ;";
+        $query = $this->condb->prepare($sql);
+        if ($query->execute()) {
+            return true;
+        } else {
+            $this->close_db();
+            return false;
+        }
     }
-    public function getPlayer($id): array
+    public function getPlayer($identifier): array
     {
-        return [];
+        $this->connect();
+        $sql = "SELECT * FROM `football_player` WHERE `identifier` = " . $identifier;
+        $query = $this->condb->prepare($sql);
+        if ($query->execute()) {
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            $this->close_db();
+            return false;
+        }
+    }
+    public function getAllPlayer()
+    {
+        $this->connect();
+        $sql = "SELECT * FROM `football_player` ORDER BY `football_player`.`identifier` DESC";
+        $query = $this->condb->prepare($sql);
+        if ($query->execute()) {
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } else {
+            $this->close_db();
+            return false;
+        }
     }
 }
 
