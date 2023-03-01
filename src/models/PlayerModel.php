@@ -97,7 +97,7 @@ class PlayerModel
         `team` = :team,
         `position` = :position,
         `image_url` = :image_url";
-        $sql .=" WHERE `football_player`.`identifier` = :identifier";
+        $sql .= " WHERE `football_player`.`identifier` = :identifier";
 
         $query = $this->condb->prepare($sql);
         if ($query->execute($dataArray)) {
@@ -120,14 +120,15 @@ class PlayerModel
             return false;
         }
     }
-    public function getPlayer($identifier): array
+    public function getPlayer($identifier)
     {
         $this->connect();
         $sql = "SELECT * FROM `football_player` WHERE `identifier` = " . $identifier;
         $query = $this->condb->prepare($sql);
         if ($query->execute()) {
             $result = $query->fetch(PDO::FETCH_ASSOC);
-            return $result;
+            return json_encode($result);
+            
         } else {
             $this->close_db();
             return false;
@@ -140,7 +141,9 @@ class PlayerModel
         $query = $this->condb->prepare($sql);
         if ($query->execute()) {
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
+
+            // return $result;
+            return json_encode($result);
         } else {
             $this->close_db();
             return false;

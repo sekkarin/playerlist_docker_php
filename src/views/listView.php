@@ -96,34 +96,27 @@
     <div class="container">
         <div class="row flex-wrap g-4 mt-1">
             <?php
-            foreach ($result as $key) {
-                # code..
-                ?>
+            for ($i=0; $i < count($result) ; $i++) { 
+           ?>
                 <div class="col-3 col-md-6 col-xl-3 ">
                     <div class="card" style="width: 18rem;">
-                        <img src="../public/images/<?php echo ($key["image_url"]) ?>" class="card-img-top" alt="...">
+                        <img src="../public/images/<?php echo ($result[$i]->image_url) ?>" class="card-img-top" width="250" height="270" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <?php echo ($key["firstname"] . " " . $key["lastname"]) ?>
+                                <?php echo ($result[$i]->firstname . " " . $result[$i]->lastname) ?>
                             </h5>
 
                             <h6 class="card-title">Team</h6>
-                            <p class="card-text"><?php echo ($key["team"]) ?></p>
+                            <p class="card-text"><?php echo ($result[$i]->team) ?></p>
                             <h6 class="card-title">Position</h6>
-                            <p class="card-text"><?php echo ($key["position"]) ?></p>
-                            <a href="./views/updatePlayer.php?identifier=<?= $key["identifier"] ?>"
+                            <p class="card-text"><?php echo ($result[$i]->position) ?></p>
+                            <a href="./views/updatePlayer.php?identifier=<?= $result[$i]->identifier ?>"
                                 class="btn btn-primary btn-sm">แก้ใข</a>
-                            <!-- <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                        แก้ใข
-                                    </button> -->
-                            <a href="../index.php?playerRout=delete&&identifier=<?php echo ($key["identifier"]) ?>"
+                            <a href="../index.php?playerRout=delete&&identifier=<?php echo ($result[$i]->identifier) ?>"
                                 class="btn btn-danger btn-sm">ลบ</a>
-
                         </div>
                     </div>
                 </div>
-
             <?php } ?>
         </div>
     </div>

@@ -18,7 +18,7 @@
 
     $conf = new Config();
     $modelPeyer = new PlayerModel($conf);
-    $player = $modelPeyer->getPlayer($identifier);
+    $player = json_decode($modelPeyer->getPlayer($identifier));
     ?>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
@@ -96,30 +96,30 @@
                 <form action="../index.php?playerRout=update" method="post" enctype="multipart/form-data">
                     
                     <div class="modal-body">
-                        <input type="hidden" name="identifier" value="<?php echo $player["identifier"]; ?>">
-                        <input type="hidden" name="old_image" value="<?php echo $player["image_url"]; ?>">
+                        <input type="hidden" name="identifier" value="<?php echo ($player->identifier); ?>">
+                        <input type="hidden" name="old_image" value="<?php echo ($player->image_url); ?>">
                         <div class="mb-3">
                             <label for="" class="form-label">ชื่อ</label>
                             <input type="text" name="firstname" id="firstname" class="form-control"
-                                value="<?php echo $player["firstname"]; ?>"
+                                value="<?php echo $player->firstname; ?>"
                                  aria-describedby="helpId">
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">นามสกุล</label>
                             <input type="text" name="lastname" id="lastname" class="form-control"
-                                value="<?php echo ($player["lastname"]) ?>" aria-describedby="helpId">
+                                value="<?php echo ($player->lastname) ?>" aria-describedby="helpId">
 
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">ทีม</label>
                             <input type="text" name="team" id="team" class="form-control"
-                                value="<?php echo ($player["team"]) ?>" aria-describedby="helpId">
+                                value="<?php echo ($player->team) ?>" aria-describedby="helpId">
 
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">ตำแหน่ง</label>
                             <input type="text" name="position" id="position" class="form-control"
-                                value="<?php echo ($player["position"]) ?>" aria-describedby="helpId">
+                                value="<?php echo ($player->position) ?>" aria-describedby="helpId">
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">รูป</label>

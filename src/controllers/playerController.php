@@ -21,7 +21,9 @@ class PlayerController
   }
   public function indexView()
   {
-    $result = $this->playerModel->getAllPlayer();
+    $json = $this->playerModel->getAllPlayer();
+    $result = json_decode($json);
+    // print_r($result);
     include('./views/listView.php');
   }
   public function insert()
@@ -50,7 +52,7 @@ class PlayerController
         }
 
         // Check file size
-        if ($_FILES["image_url"]["size"] > 500000) {
+        if ($_FILES["image_url"]["size"] > 1000000) {
           echo "Sorry, your file is too large.";
           $uploadOk = 0;
         }
@@ -120,7 +122,7 @@ class PlayerController
         }
 
         // Check file size
-        if ($_FILES["image_url"]["size"] > 500000) {
+        if ($_FILES["image_url"]["size"] > 1000000) {
           echo "Sorry, your file is too large.";
           $uploadOk = 0;
         }
@@ -149,9 +151,8 @@ class PlayerController
 
         $insert = $this->playerModel->updatePlayer($dataArrar);
         if ($insert == true) {
-
-          if (file_exists($old_file)) {
-            unlink($old_file);
+          if (file_exists("./public/images/".$old_file)) {
+            unlink("./public/images/".$old_file);
           }
           $this->pageRedirect('./index.php');
         } else {
